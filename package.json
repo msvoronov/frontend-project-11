@@ -1,0 +1,17 @@
+{
+  "name": "@hexlet/code",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "RSS aggregator",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "jest --colors"
+  },
+  "author": "Mikhail Voronov",
+  "license": "ISC",
+  "devDependencies": {
+    "eslint": "^8.57.1",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-plugin-import": "^2.31.0"
+  }
+}
