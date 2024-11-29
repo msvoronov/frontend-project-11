@@ -6,4 +6,4 @@
 App available on
 https://frontend-project-11-sigma-ashen.vercel.app/
 
-This utility is developed by Mikhail Voronov as educational project in Hexlet programming school.
+This app is developed by Mikhail Voronov as educational project in Hexlet programming school.
