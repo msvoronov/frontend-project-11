@@ -1,6 +1,6 @@
 export default {
   translation: {
-    title: 'RSS aggregator',
+    title: 'RSS reader',
     subtitle: 'Add a link and start reading RSS!',
     label: 'RSS Link',
     button: 'Add',
@@ -8,11 +8,14 @@ export default {
       read: 'Read in full',
       close: 'Close',
     },
+    feeds: 'Feeds',
+    posts: 'Posts',
+    view: 'View',
     errors: {
-      not: 'RSS loaded successfully',
+      none: 'RSS loaded successfully',
       url: 'The link must be a valid URL',
       notOneOf: 'RSS already exists',
-      next: 'The resource does not contain a valid RSS',
+      notContainRSS: 'The resource does not contain a valid RSS',
     },
   },
 };
