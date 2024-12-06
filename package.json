@@ -2,7 +2,7 @@
   "name": "@hexlet/code",
   "version": "1.0.0",
   "type": "module",
-  "description": "RSS aggregator",
+  "description": "RSS reader",
   "main": "src/index.js",
   "scripts": {
     "test": "jest --colors"
