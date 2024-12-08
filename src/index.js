@@ -49,16 +49,15 @@ form.addEventListener('submit', (e) => {
   const formData = new FormData(e.target);
   const url = formData.get('url');
 
-  // Валидация ...
   const schema = yup.string().required().url().notOneOf(state.links);
   schema.validate(url)
-    .then(() => { // ... прошла
+    .then(() => { // Валидация прошла
       watchedState.statusApp = 'executing'; // блокируем кнопку
       return getDataRSS(url);
     })
     .then((content) => {
       watchedState.statusApp = 'waitingInput'; // разблокируем кнопку
-      if (content === 'Error') {
+      if (content === 'parseError') {
         watchedState.typeError = 'notContainRSS';
       } else {
         state.links.push(url);
@@ -74,8 +73,11 @@ form.addEventListener('submit', (e) => {
         state.typeError = null; // Иначе onChange не сработает при двух корректных ссылках подряд
       }
     })
-    .catch((err) => { // ... не прошла
+    .catch((err) => { // Валидация не прошла или случилась ошибка сети при вызове getDataRSS
       watchedState.statusApp = 'waitingInput'; // разблокируем кнопку
+      if (err === 'networkError') {
+        watchedState.typeError = err;
+      }
       watchedState.typeError = err.type;
     });
 });

@@ -3,13 +3,13 @@ const parse = (xml) => {
   const content = parser.parseFromString(xml, 'application/xml');
   const title = content.querySelector('title');
   return title.textContent === 'Error'
-    ? 'Error'
+    ? 'parseError'
     : content;
 };
 
 const getDataRSS = (url) => fetch(`https://allorigins.hexlet.app/get?disableCache=true&url=${encodeURIComponent(url)}`)
   .then((response) => response.json())
   .then((data) => parse(data.contents))
-  .catch(console.error);
+  .catch(() => 'networkError');
 
 export default getDataRSS;

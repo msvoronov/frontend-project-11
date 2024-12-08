@@ -71,13 +71,21 @@ const renderPosts = (posts, i18n) => {
     const li = document.createElement('li');
     li.classList.add('list-group-item', 'd-flex', 'justify-content-between', 'align-items-start', 'border-0', 'border-end-0');
     li.innerHTML = `
-      <a href="${post.link}" class="fw-bold" data-id="1111" target="_blank" rel="noopener noreferrer">${post.title}</a>
-      <button type="button" class="btn btn-outline-primary btn-sm" data-id="1111" data-bs-toggle="modal" data-bs-target="#modal">${i18n.t('view')}</button>`;
+      <a href="${post.link}" class="fw-bold" target="_blank" rel="noopener noreferrer">${post.title}</a>
+      <button type="button" class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" data-bs-target="#modal">${i18n.t('view')}</button>`;
+
+    const a = li.querySelector('a');
     const button = li.querySelector('button');
+    const markAsVisited = () => {
+      a.classList.remove('fw-bold');
+      a.classList.add('fw-normal', 'link-secondary');
+    };
+    a.addEventListener('click', markAsVisited);
     button.addEventListener('click', () => {
       document.querySelector('.modal-title').textContent = post.title;
       document.querySelector('.modal-body').textContent = post.description;
       document.querySelector('.full-article').setAttribute('href', post.link);
+      markAsVisited();
     });
     ul.prepend(li);
   });
