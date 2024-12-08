@@ -7,8 +7,9 @@ import resources from './locales/index.js';
 import render from './render.js';
 import getDataRSS from './getDataRSS.js';
 
-console.log('Пример RSS-ссылки 1: https://lorem-rss.hexlet.app/feed');
-console.log('Пример RSS-ссылки 2: https://lorem-rss.hexlet.app/feed?unit=second&interval=30');
+console.log('https://lorem-rss.hexlet.app/feed');
+console.log('https://lorem-rss.hexlet.app/feed?unit=second&interval=30');
+console.log('https://www.finam.ru/analysis/conews/rsspoint/');
 
 const i18n = i18next.createInstance();
 
@@ -39,7 +40,7 @@ const extractPosts = (content) => {
     const description = item.querySelector('description').textContent;
     const link = item.querySelector('link').textContent;
     return { title, description, link };
-  });
+  }).reverse();
 };
 
 const form = document.querySelector('form');
@@ -65,7 +66,7 @@ form.addEventListener('submit', (e) => {
         const newFeed = extractFeed(content);
         const newPosts = extractPosts(content);
         state.feeds.push(newFeed);
-        state.posts.push(newPosts);
+        state.posts = [...state.posts, ...newPosts];
         watchedState.lastAddedFeed = newFeed;
         watchedState.lastAddedPosts = newPosts;
 
@@ -78,6 +79,27 @@ form.addEventListener('submit', (e) => {
       watchedState.typeError = err.type;
     });
 });
+
+const checkLinks = () => {
+  const frequencyChecking = 5000;
+  setTimeout(() => {
+    state.links.forEach((url) => {
+      getDataRSS(url)
+        .then((content) => {
+          const titlesAddedPosts = state.posts.map((addedPost) => addedPost.title);
+          const extractedPosts = extractPosts(content);
+          const filteredPosts = extractedPosts
+            .filter((newPost) => !titlesAddedPosts.includes(newPost.title));
+          if (filteredPosts.length !== 0) {
+            state.posts = [...state.posts, ...filteredPosts];
+            watchedState.lastAddedPosts = filteredPosts;
+          }
+        });
+    });
+    checkLinks();
+  }, frequencyChecking);
+};
+checkLinks();
 
 i18n.init({
   lng: 'ru',
