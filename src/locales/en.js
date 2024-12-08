@@ -16,6 +16,7 @@ export default {
       url: 'The link must be a valid URL',
       notOneOf: 'RSS already exists',
       notContainRSS: 'The resource does not contain a valid RSS',
+      networkError: 'Network error',
     },
   },
 };
