@@ -1,8 +1,8 @@
 const parse = (xml) => {
   const parser = new DOMParser();
   const content = parser.parseFromString(xml, 'application/xml');
-  const title = content.querySelector('title');
-  return title.textContent === 'Error'
+  const isParseError = Boolean(content.querySelector('parsererror'));
+  return isParseError
     ? 'parseError'
     : content;
 };
