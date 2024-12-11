@@ -58,7 +58,7 @@ form.addEventListener('submit', (e) => {
     .then((content) => {
       watchedState.statusApp = 'waitingInput'; // разблокируем кнопку
       if (content === 'networkError' || content === 'parseError') { // ошибка сети или парсинга
-        watchedState.typeError = content;      
+        watchedState.typeError = content;
       } else {
         state.links.push(url);
 
@@ -74,7 +74,7 @@ form.addEventListener('submit', (e) => {
       }
     })
     .catch((err) => { // Валидация не прошла
-      watchedState.statusApp = 'waitingInput'; // разблокируем кнопку      
+      watchedState.statusApp = 'waitingInput'; // разблокируем кнопку
       watchedState.typeError = err.type;
     });
 });

@@ -8,7 +8,7 @@ const parse = (xml) => {
 };
 
 const getDataRSS = (url) => fetch(`https://allorigins.hexlet.app/get?disableCache=true&url=${encodeURIComponent(url)}`)
-  .then((response) => response.ok ? response.json() : Promise.reject())
+  .then((response) => (response.ok ? response.json() : Promise.reject()))
   .then((data) => parse(data.contents))
   .catch(() => 'networkError');
 
