@@ -15,7 +15,7 @@ export default {
       none: 'RSS loaded successfully',
       url: 'The link must be a valid URL',
       notOneOf: 'RSS already exists',
-      notContainRSS: 'The resource does not contain a valid RSS',
+      parseError: 'The resource does not contain a valid RSS',
       networkError: 'Network error',
     },
   },
