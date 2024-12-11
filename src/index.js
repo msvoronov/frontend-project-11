@@ -9,7 +9,7 @@ import getDataRSS from './getDataRSS.js';
 
 console.log('https://lorem-rss.hexlet.app/feed');
 console.log('https://lorem-rss.hexlet.app/feed?unit=second&interval=30');
-console.log('https://www.finam.ru/analysis/conews/rsspoint/');
+console.log('https://httpstat.us/400-561');
 
 const i18n = i18next.createInstance();
 
@@ -57,8 +57,8 @@ form.addEventListener('submit', (e) => {
     })
     .then((content) => {
       watchedState.statusApp = 'waitingInput'; // разблокируем кнопку
-      if (content === 'parseError') {
-        watchedState.typeError = 'notContainRSS';
+      if (content === 'networkError' || content === 'parseError') { // ошибка сети или парсинга
+        watchedState.typeError = content;      
       } else {
         state.links.push(url);
 
@@ -73,11 +73,8 @@ form.addEventListener('submit', (e) => {
         state.typeError = null; // Иначе onChange не сработает при двух корректных ссылках подряд
       }
     })
-    .catch((err) => { // Валидация не прошла или случилась ошибка сети при вызове getDataRSS
-      watchedState.statusApp = 'waitingInput'; // разблокируем кнопку
-      if (err === 'networkError') {
-        watchedState.typeError = err;
-      }
+    .catch((err) => { // Валидация не прошла
+      watchedState.statusApp = 'waitingInput'; // разблокируем кнопку      
       watchedState.typeError = err.type;
     });
 });
