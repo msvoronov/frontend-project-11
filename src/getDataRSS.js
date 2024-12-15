@@ -28,8 +28,8 @@ const getDataRSS = (url) => {
   const controller = new AbortController();
   setTimeout(() => controller.abort(new Error('networkError')), timeoutAbortRequest);
   return fetch(`https://allorigins.hexlet.app/get?disableCache=true&url=${encodeURIComponent(url)}`, { signal: controller.signal })
-    .then((response) => response.ok ? response.json() : Promise.reject(new Error('networkError')))
+    .then((response) => (response.ok ? response.json() : Promise.reject(new Error('networkError'))))
     .then((data) => parse(data.contents, url));
-}
+};
 
 export default getDataRSS;
