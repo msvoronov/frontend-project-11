@@ -28,7 +28,7 @@ const getDataRSS = (url) => fetch(`https://allorigins.hexlet.app/get?disableCach
     if (response.ok) {
       return response.json();
     }
-    throw new Error('networkError');
+    return Promise.reject(new Error('networkError'));
   })
   .then((data) => parse(data.contents, url));
 
