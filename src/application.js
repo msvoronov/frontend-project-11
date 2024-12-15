@@ -66,10 +66,10 @@ export default () => {
       })
       .catch((err) => { // Валидация не прошла или выброшена ошибка в getDataRSS
         watchedState.form.statusApp = 'waitingInput'; // разблокируем кнопку
-        if (err.message === 'networkError' || err.message === 'failed to fetch') {
-          watchedState.form.typeError = 'networkError';          
+        if (err.message === 'networkError' || err.message === 'Failed to fetch') {
+          watchedState.form.typeError = 'networkError';
         } else if (err.message === 'parseError') {
-          watchedState.form.typeError = 'parseError';  
+          watchedState.form.typeError = 'parseError';
         } else {
           watchedState.form.typeError = err.type;
         }
