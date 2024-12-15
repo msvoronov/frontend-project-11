@@ -23,8 +23,13 @@ const parse = (xml, url) => {
   return { feed: extractFeed(content, url), posts: extractPosts(content) };
 };
 
-const getDataRSS = (url) => fetch(`https://allorigins.hexlet.app/get?disableCache=true&url=${encodeURIComponent(url)}`)
-  .then((response) => response.ok ? response.json() : Promise.reject(new Error('networkError')))
-  .then((data) => parse(data.contents, url));
+const getDataRSS = (url) => {
+  const timeoutAbortRequest = 4500;
+  const controller = new AbortController();
+  setTimeout(() => controller.abort(new Error('networkError')), timeoutAbortRequest);
+  return fetch(`https://allorigins.hexlet.app/get?disableCache=true&url=${encodeURIComponent(url)}`, { signal: controller.signal })
+    .then((response) => response.ok ? response.json() : Promise.reject(new Error('networkError')))
+    .then((data) => parse(data.contents, url));
+}
 
 export default getDataRSS;
