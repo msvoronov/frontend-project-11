@@ -1,9 +1,9 @@
 const form = document.querySelector('form');
 const input = form.querySelector('input');
-const feedback = form.nextElementSibling;
+const feedback = document.querySelector('.feedback');
 
-const renderButton = (status) => {
-  if (status === 'executing') {
+const renderForm = (status) => {
+  if (status === 'executingRequest') {
     form.querySelector('button').disabled = true;
   } else {
     form.querySelector('button').disabled = false;
@@ -11,17 +11,18 @@ const renderButton = (status) => {
 };
 
 const renderError = (error, i18n) => {
-  if (error === 'noError') {
+  if (error === null) {
     input.classList.remove('is-invalid');
+    feedback.classList.remove('text-danger', 'text-success');
+    feedback.textContent = '';
+  } else if (error === 'noError') {
     input.value = '';
     input.focus();
-    feedback.classList.remove('text-danger');
     feedback.classList.add('text-success');
     feedback.textContent = i18n.t('errors.none');
   } else {
     input.classList.add('is-invalid');
     feedback.classList.add('text-danger');
-    feedback.classList.remove('text-success');
     feedback.textContent = i18n.t(`errors.${error}`);
   }
 };
@@ -71,42 +72,40 @@ const renderPosts = (posts, i18n) => {
     const li = document.createElement('li');
     li.classList.add('list-group-item', 'd-flex', 'justify-content-between', 'align-items-start', 'border-0', 'border-end-0');
     li.innerHTML = `
-      <a href="${post.link}" class="fw-bold" target="_blank" rel="noopener noreferrer">${post.title}</a>
-      <button type="button" class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" data-bs-target="#modal">${i18n.t('view')}</button>`;
-
-    const a = li.querySelector('a');
-    const button = li.querySelector('button');
-    const markAsVisited = () => {
-      a.classList.remove('fw-bold');
-      a.classList.add('fw-normal', 'link-secondary');
-    };
-    a.addEventListener('click', markAsVisited);
-    button.addEventListener('click', () => {
-      document.querySelector('.modal-title').textContent = post.title;
-      document.querySelector('.modal-body').textContent = post.description;
-      document.querySelector('.full-article').setAttribute('href', post.link);
-      markAsVisited();
-    });
+      <a href="${post.link}" class="fw-bold" target="_blank" data-id="${post.id}" rel="noopener noreferrer">${post.title}</a>
+      <button type="button" class="btn btn-outline-primary btn-sm" data-id="${post.id}" data-bs-toggle="modal" data-bs-target="#modal">${i18n.t('view')}</button>`;
     ul.prepend(li);
   });
 };
 
+const renderModal = (post) => {
+  const a = document.querySelector(`[data-id="${post.id}"]`);
+  a.classList.remove('fw-bold');
+  a.classList.add('fw-normal', 'link-secondary');
+  document.querySelector('.modal-title').textContent = post.title;
+  document.querySelector('.modal-body').textContent = post.description;
+  document.querySelector('.full-article').setAttribute('href', post.link);
+};
+
 const render = (path, value, i18n) => {
   switch (path) {
-    case 'statusApp':
-      renderButton(value);
+    case 'form.statusApp':
+      renderForm(value);
       break;
-    case 'typeError':
+    case 'form.typeError':
       renderError(value, i18n);
       break;
     case 'lng':
       renderTexts(i18n);
       break;
-    case 'lastAddedFeed':
+    case 'feeds':
       renderFeed(value, i18n);
       break;
-    case 'lastAddedPosts':
+    case 'posts':
       renderPosts(value, i18n);
+      break;
+    case 'modalPost':
+      renderModal(value);
       break;
     default:
       throw new Error(`Unknown state parameter: '${path}'!`);
