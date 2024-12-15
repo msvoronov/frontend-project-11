@@ -24,12 +24,7 @@ const parse = (xml, url) => {
 };
 
 const getDataRSS = (url) => fetch(`https://allorigins.hexlet.app/get?disableCache=true&url=${encodeURIComponent(url)}`)
-  .then((response) => {
-    if (response.ok) {
-      return response.json();
-    }
-    return Promise.reject(new Error('networkError'));
-  })
+  .then((response) => response.ok ? response.json() : Promise.reject(new Error('networkError')))
   .then((data) => parse(data.contents, url));
 
 export default getDataRSS;
