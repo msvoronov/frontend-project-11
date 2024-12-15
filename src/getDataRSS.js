@@ -24,7 +24,7 @@ const parse = (xml, url) => {
 };
 
 const getDataRSS = (url) => {
-  const timeoutAbortRequest = 4500;
+  const timeoutAbortRequest = 4000;
   const controller = new AbortController();
   setTimeout(() => controller.abort(new Error('networkError')), timeoutAbortRequest);
   return fetch(`https://allorigins.hexlet.app/get?disableCache=true&url=${encodeURIComponent(url)}`, { signal: controller.signal })
