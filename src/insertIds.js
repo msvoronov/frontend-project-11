@@ -1,11 +1,3 @@
-const insertIds = (posts, maxId) => {
-  const preparedPosts = posts.map((post) => {
-    const id = {
-      id: maxId + posts.indexOf(post),
-    };
-    return { ...post, ...id };
-  });
-  return preparedPosts;
-};
+import { v4 as uuidv4 } from 'uuid';
 
-export default insertIds;
+export default (posts) => posts.map((post) => ({ ...post, ...{ id: uuidv4() } }));

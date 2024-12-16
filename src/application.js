@@ -6,26 +6,8 @@ import render from './render.js';
 import getDataRSS from './getDataRSS.js';
 import insertIds from './insertIds.js';
 
-export default () => {
-  const defaultLanguage = 'ru';
-  const state = {
-    lng: defaultLanguage,
-    form: {
-      statusApp: 'waitingInput',
-      typeError: null,
-    },
-    modalPost: null,
-    feeds: [],
-    posts: [],
-  };
-
-  const i18n = i18next.createInstance();
-  i18n.init({
-    lng: state.lng,
-    resources,
-  }).then(() => {
-    render('lng', i18n.lng, i18n);
-  });
+const app = (state, i18n) => {
+  render('lng', i18n.lng, i18n);
 
   const watchedState = onChange(state, (path, value, previousValue) => {
     if (path === 'posts') {
@@ -61,7 +43,7 @@ export default () => {
         const { feed, posts } = content;
         watchedState.feeds.push(feed);
 
-        const preparedPosts = insertIds(posts, state.posts.length);
+        const preparedPosts = insertIds(posts);
         watchedState.posts = [...state.posts, ...preparedPosts];
       })
       .catch((err) => { // Валидация не прошла или выброшена ошибка в getDataRSS
@@ -76,10 +58,11 @@ export default () => {
       });
   });
 
-  document.addEventListener('click', (e) => {
+  const postsList = document.querySelector('.posts');
+  postsList.addEventListener('click', (e) => {
     if (e.target.matches('[data-id]')) {
       const { id } = e.target.dataset;
-      const selectedPost = state.posts.filter((post) => post.id === Number(id))[0];
+      const selectedPost = state.posts.find((post) => post.id === id);
       watchedState.modalPost = selectedPost;
     }
   });
@@ -95,7 +78,7 @@ export default () => {
           const filteredPosts = posts
             .filter((newPost) => !titlesAddedPosts.includes(newPost.title));
           if (filteredPosts.length !== 0) {
-            const preparedPosts = insertIds(filteredPosts, state.posts.length);
+            const preparedPosts = insertIds(filteredPosts);
             watchedState.posts = [...state.posts, ...preparedPosts];
           }
         }));
@@ -104,3 +87,27 @@ export default () => {
   };
   checkLinks();
 };
+
+const init = () => {
+  const defaultLanguage = 'ru';
+  const state = {
+    lng: defaultLanguage,
+    form: {
+      statusApp: 'waitingInput',
+      typeError: null,
+    },
+    modalPost: null,
+    feeds: [],
+    posts: [],
+  };
+
+  const i18n = i18next.createInstance();
+  i18n.init({
+    lng: state.lng,
+    resources,
+  }).then(() => {
+    app(state, i18n);
+  });
+};
+
+export default init;

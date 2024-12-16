@@ -1,34 +1,23 @@
-const form = document.querySelector('form');
-const input = form.querySelector('input');
-const feedback = document.querySelector('.feedback');
-
-const renderForm = (status) => {
-  if (status === 'executingRequest') {
-    form.querySelector('button').disabled = true;
-  } else {
-    form.querySelector('button').disabled = false;
-  }
-};
-
-const renderError = (error, i18n) => {
+const renderError = (error, i18n, elements) => {
+  const { formInput, feedback } = elements;
   if (error === null) {
-    input.classList.remove('is-invalid');
+    formInput.classList.remove('is-invalid');
     feedback.classList.remove('text-danger', 'text-success');
     feedback.textContent = '';
   } else if (error === 'noError') {
-    input.value = '';
-    input.focus();
+    formInput.value = '';
+    formInput.focus();
     feedback.classList.add('text-success');
     feedback.textContent = i18n.t('errors.none');
   } else {
-    input.classList.add('is-invalid');
+    formInput.classList.add('is-invalid');
     feedback.classList.add('text-danger');
     feedback.textContent = i18n.t(`errors.${error}`);
   }
 };
 
-const renderTexts = (i18n) => {
-  const modalRead = document.querySelector('.full-article');
+const renderTexts = (i18n, elements) => {
+  const { modalRead, formInput, formButton } = elements;
   modalRead.textContent = i18n.t('modal.read');
   modalRead.nextElementSibling.textContent = i18n.t('modal.close');
 
@@ -36,8 +25,8 @@ const renderTexts = (i18n) => {
   h1.textContent = i18n.t('title');
   h1.nextElementSibling.textContent = i18n.t('subtitle');
 
-  input.nextElementSibling.textContent = i18n.t('label');
-  form.querySelector('button').textContent = i18n.t('button');
+  formInput.nextElementSibling.textContent = i18n.t('label');
+  formButton.textContent = i18n.t('button');
 };
 
 const renderFeed = (feed, i18n) => {
@@ -78,25 +67,35 @@ const renderPosts = (posts, i18n) => {
   });
 };
 
-const renderModal = (post) => {
+const renderModal = (post, elements) => {
+  const { modalTitle, modalBody, modalRead } = elements;
   const a = document.querySelector(`[data-id="${post.id}"]`);
   a.classList.remove('fw-bold');
   a.classList.add('fw-normal', 'link-secondary');
-  document.querySelector('.modal-title').textContent = post.title;
-  document.querySelector('.modal-body').textContent = post.description;
-  document.querySelector('.full-article').setAttribute('href', post.link);
+  modalTitle.textContent = post.title;
+  modalBody.textContent = post.description;
+  modalRead.setAttribute('href', post.link);
 };
 
 const render = (path, value, i18n) => {
+  const elements = {
+    formInput: document.querySelector('form input'),
+    formButton: document.querySelector('form button'),
+    feedback: document.querySelector('.feedback'),
+    modalTitle: document.querySelector('.modal-title'),
+    modalBody: document.querySelector('.modal-body'),
+    modalRead: document.querySelector('.full-article'),
+  };
+
   switch (path) {
     case 'form.statusApp':
-      renderForm(value);
+      elements.formButton.disabled = value === 'executingRequest';
       break;
     case 'form.typeError':
-      renderError(value, i18n);
+      renderError(value, i18n, elements);
       break;
     case 'lng':
-      renderTexts(i18n);
+      renderTexts(i18n, elements);
       break;
     case 'feeds':
       renderFeed(value, i18n);
@@ -105,7 +104,7 @@ const render = (path, value, i18n) => {
       renderPosts(value, i18n);
       break;
     case 'modalPost':
-      renderModal(value);
+      renderModal(value, elements);
       break;
     default:
       throw new Error(`Unknown state parameter: '${path}'!`);
